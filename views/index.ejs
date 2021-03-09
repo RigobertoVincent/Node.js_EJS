@@ -1,0 +1,54 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/nav.ejs") %>
+
+  <div class="blogs content">
+    <h2>All Blogs</h2>
+
+    <% if (blogs.length > 0) { %>
+      <% blogs.forEach(blog => { %>
+
+        <h3 class="title"><%= blog.title %></h3>
+        <p class="snippet"><%= blog.snippet %></p>
+
+      <% }) %>
+    <% } else { %>
+      <p>There are no blogs to display...</p>
+    <% } %>
+
+  </div>
+  <br>
+  <button id="btn">Retrieve More Other Posts with comments</button>
+  <div id="posts_info"></div>
+
+  <%- include("./partials/footer.ejs") %>
+</body>
+
+<script>
+    var btn = document.getElementById("btn")
+    var postsCopntainer = document.getElementById("posts_info")
+    btn.addEventListener("click", function () {
+        var xmlRequest = new XMLHttpRequest();
+        xmlRequest.open('GET','https://jsonplaceholder.typicode.com/posts/1/comments');
+        xmlRequest.onload = function () {
+            var data = JSON.parse(xmlRequest.responseText);
+            appendHTML(data);
+        };
+        xmlRequest.send();
+    });
+
+    function appendHTML(posts_data) {
+        var html = "";
+        for (i = 0; i < posts_data.length; i++) {
+            html += "<p>" +"Post ID:" + posts_data[i].postId +
+                "<br>" +"User ID: " + posts_data[i].id +
+                "<br>" +"User Name: " +posts_data[i].name +
+                "<br>" +"User Email: " +posts_data[i].email +
+                "<br>" +"Post Comment: " +posts_data[i].body + ".</p>";
+        }
+        postsCopntainer.insertAdjacentHTML('beforeend', html);
+    }
+</script>
+</html>
